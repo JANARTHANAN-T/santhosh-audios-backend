@@ -2,8 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
+const editRouter = require("./routes/editRoutes")
 const cookieParser = require("cookie-parser");
-const path =require('path')
+
 const app = express();
 app.listen(5000, (err) => {
   if (err) {
@@ -31,3 +32,4 @@ app.get('/', (req, res) => {
 })
 app.use(express.json());
 app.use("/api", authRoutes);
+app.use("/edit", editRouter)
