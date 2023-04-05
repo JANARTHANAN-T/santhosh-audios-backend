@@ -2,8 +2,8 @@ const User = require("../model/authModel");
 const jwt = require("jsonwebtoken");
 
 const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id) => {
-  return jwt.sign({ id }, "kishan sheth super secret key", {
+const createToken = (id,email) => {
+  return jwt.sign({ id,email }, process.env.jwtgenkey, {
     expiresIn: maxAge,
   });
 };
@@ -54,22 +54,23 @@ module.exports.register = async (req, res, next) => {
     res.json({ err,status: false });
   }
 };
-module.exports.login = async (req, res) => {
+module.exports.login = async (req, res,next) => {
   const { email, password } = req.body;
   console.log(email+'  -   '+password)
   try {
     const user = await User.login(email, password);
     if(user){
-    const token = createToken(user._id);
+    const token = createToken(user._id,user.email);
     res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
-    res.status(200).json({ user: user._id, status: true,username:user.name,role:user.role ,plase:user.city,msg:'Login Scussflly'});
+    
+    res.status(200).json({ user: user._id, status: true,username:user.name,msg:'Login Scussflly'});
     }
     else
     return res.status(400).json({status:false,msg:"Wrong username or password !"})
     
   } catch (err) {
     const errors = handleErrors(err);
-    res.stsus(500).json({ errors, status: false ,msg:"something went wrong"});
+    res.status(500).json({ errors, status: false ,msg:"something went wrong"});
   }
 };
  

@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const editRouter = require("./routes/editRoutes")
 const cookieParser = require("cookie-parser");
-
+const { auth } = require("./middlewares/authMiddleware");
+require('dotenv').config()
 const app = express();
 app.listen(5000, (err) => {
   if (err) {
@@ -14,7 +15,7 @@ app.listen(5000, (err) => {
   }
 });
 mongoose
-  .connect("mongodb+srv://owndb:VInxk9KEBPe3RMcU@cluster0.ncpvelk.mongodb.net/Santhosh-audios", {
+  .connect(process.env.mongourl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -23,13 +24,13 @@ mongoose
   })
   .catch((err) => {
     console.log(err.message);
-  });
-
+});
+ 
 app.use(cors());
 app.use(cookieParser());
 app.get('/', (req, res) => {
   res.send("GET Request Called")
 })
 app.use(express.json());
-app.use("/api", authRoutes);
-app.use("/edit", editRouter)
+app.use("/auth", authRoutes);
+app.use("/edit",auth,editRouter)
