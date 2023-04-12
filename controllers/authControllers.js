@@ -47,7 +47,7 @@ module.exports.register = async (req, res, next) => {
     //   maxAge: maxAge * 1000,
     // });
 
-    res.status(201).json({ status: true });
+    res.status(201).json({ status: true,user });
   } catch (err) {
     console.log(err);
     // const errors = handleErrors(err);
@@ -56,14 +56,15 @@ module.exports.register = async (req, res, next) => {
 };
 module.exports.login = async (req, res,next) => {
   const { email, password } = req.body;
-  console.log(email+'  -   '+password)
+  console.log(email+'  -   '+password) 
   try {
     const user = await User.login(email, password);
+    console.log(user);
     if(user){
     const token = createToken(user._id,user.email);
     res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
     
-    res.status(200).json({ user: user._id, status: true,username:user.name,msg:'Login Scussflly'});
+    res.status(200).json({ user, status: true,msg:'Login Scussflly'});
     }
     else
     return res.status(400).json({status:false,msg:"Wrong username or password !"})
