@@ -1,4 +1,4 @@
-const { getdata, savedata } = require('../controllers/editeControllers');
+const { getdata, savedata } = require('../controllers/editControllers');
 const { auth } = require('../middlewares/authMiddleware');
 
 const router = require('express').Router();

@@ -15,14 +15,19 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Password is Required"],
   },
+  isadmin :{
+    type:Boolean,
+    default:false
+  }
 });
 
+// password hashing 
 userSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
-
+//login auth
 userSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email });
   if (user) {
@@ -34,5 +39,11 @@ userSchema.statics.login = async function (email, password) {
   }
   return false
 };
+// get all user
+userSchema.statics.view = async function(){
+  const user = await this.find({},{password:0})
+  // console.log(user);
+  return user;
+}
 
 module.exports = mongoose.model("Users", userSchema);
