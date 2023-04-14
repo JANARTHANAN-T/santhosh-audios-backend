@@ -40,6 +40,35 @@ module.exports.viewmsg= async(req,res)=>{
         catch (error) {
             console.log(error);
             res.status(200).json({status:false,msg:"something went wrong"})
-          }
+        }
     }
+}
+module.exports.deletemsg= async(req,res)=>{
+    const id = req.params.id;
+    if(id){
+        await Messages.deleteOne({_id:id})
+            .then(()=>{
+                res.status(200).json({status:false,msg:"Deleted Successfully"})
+            })
+            .catch((err)=>{
+                res.status(200).json({status:false,msg:err})
+
+            })
+            
+        }
+    else
+        res.status(200).json({status:false,msg:"Enter Valid Details id"})
+    }
+    
+    
+module.exports.deleteallmag= async(req,res)=>{
+    await Messages.deleteMany()
+        .then(()=>{
+            res.status(200).json({status:false,msg:"Deleted Successfully"})
+        })
+        .catch((err)=>{
+            res.status(200).json({status:false,msg:err})
+
+        })
+    
 }
