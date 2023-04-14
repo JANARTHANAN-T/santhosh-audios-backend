@@ -1,8 +1,7 @@
-const { Router } = require("express");
-const { newmag, allmsg } = require("../controllers/messageControllers");
+const { newmag, allmsg, viewmsg } = require("../controllers/messageControllers");
 
 const router = require('express').Router();
-router.post('/new',newmag);
-router.get('/all',allmsg);
-// Router.put('/')
+router.post('/',newmag);
+router.get('/',allmsg);
+router.put('/:id',viewmsg)
 module.exports= router; 
