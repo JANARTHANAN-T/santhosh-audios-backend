@@ -39,7 +39,6 @@ module.exports.register = async (req, res, next) => {
     const {username, email, password} = req.body;
     // console.log(JSON.stringify(req.body.email))
     const user = await User.create({ username,email,password });
-    const repo = await Repos.create({email,reponame:"kali"})
 
     res.status(201).json({ status: true });
   } catch (err) {

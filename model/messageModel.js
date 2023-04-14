@@ -18,8 +18,10 @@ const messageSchema=new mongoose.Schema({
   },
   status:{
     type:Boolean,
-    default: true
+    default: false
   }
 })
 
-modelName.exports = mongoose.model("Messages",messageSchema);
+
+
+module.exports = mongoose.model("Messages",messageSchema);
