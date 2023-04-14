@@ -16,7 +16,7 @@ module.exports.auth =async (req, res, next) => {
         } else {
           const user = await User.findById(decodedToken.id);
           if (user){
-            req.body.userdata={status: true, user: user.email};
+            req.body.userdata={status: true, email: user.email};
             next();
 
             // res.json({});

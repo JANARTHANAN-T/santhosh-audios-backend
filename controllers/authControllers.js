@@ -1,6 +1,6 @@
 const User = require("../model/authModel");
 const jwt = require("jsonwebtoken");
-
+const Repos=require("../model/repoModel")
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id,email) => {
   return jwt.sign({ id,email }, process.env.jwtgenkey, {
@@ -39,13 +39,7 @@ module.exports.register = async (req, res, next) => {
     const {username, email, password} = req.body;
     // console.log(JSON.stringify(req.body.email))
     const user = await User.create({ username,email,password });
-    // const token = createToken(user._id);
-
-    // res.cookie("jwt", token, {
-    //   withCredentials: true,
-    //   httpOnly: false,
-    //   maxAge: maxAge * 1000,
-    // });
+    const repo = await Repos.create({email,reponame:"kali"})
 
     res.status(201).json({ status: true,user });
   } catch (err) {
@@ -62,9 +56,9 @@ module.exports.login = async (req, res,next) => {
     console.log(user);
     if(user){
     const token = createToken(user._id,user.email);
-    res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
+    // res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
     
-    res.status(200).json({ user, status: true,msg:'Login Scussflly'});
+    res.status(200).json({ user, status: true,jwt:token,msg:'Login Successfully'});
     }
     else
     return res.status(400).json({status:false,msg:"Wrong username or password !"})
@@ -75,3 +69,32 @@ module.exports.login = async (req, res,next) => {
   }
 };
  
+module.exports.viewuser= async(req,res)=>{
+  const user = await User.view();
+  if(user){
+    // console.log(user)
+    res.status(200).json({status:true,users:user})
+  }
+  else{
+    res.status(200).json({status:false,msg:"Users not found"})
+  }
+};
+
+// delete user
+
+module.exports.deleteuser= async(req,res)=>{
+  const id =req.params.id;
+  if(id){
+    await User.deleteOne(({_id:id}))
+      .then(async()=>{
+        const users=await User.find({})
+        res.status(200).json({status:true,msg:"Accound deletd sucessfully",users})
+      })
+      .catch(function(err){res.status(200).json({status:false,msg:"Users not found",err:err})})
+    // re
+  }
+  else{
+    res.status(200).json({status:false,msg:"Users not found"})
+  }
+
+}
