@@ -1,6 +1,8 @@
 const User = require("../model/authModel");
 const jwt = require("jsonwebtoken");
 const Repos=require("../model/repoModel")
+const generateOTP = require('../services/otpGen');
+const { sendMail } = require("../services/sendMail");
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id,email) => {
   return jwt.sign({ id,email }, process.env.jwtgenkey, {
@@ -48,11 +50,14 @@ module.exports.register = async (req, res, next) => {
   }
 };
 module.exports.login = async (req, res,next) => {
+<<<<<<< HEAD
   const { email, password, deviceId } = req.body;
+=======
+  const { email, password,deviceID } = req.body;
+>>>>>>> d1b6896a194c091d7fbc4b2a72d5b467e77b9eec
   console.log({...req.body}) 
   try {
-    const user = await User.login(email, password);
-    console.log(user);
+    const user = await User.login(email, password,deviceID);
     if(user){
     const token = createToken(user._id,user.email);
     // res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
@@ -95,5 +100,75 @@ module.exports.deleteuser= async(req,res)=>{
   else{
     res.status(200).json({status:false,msg:"Users not found"})
   }
+}
 
+//change password
+
+module.exports.changepass= async(req,res)=>{
+  const id =req.params.id;
+  const {password}= req.body;
+  if(id,password){
+    const user = User.updatePass(id,password)
+    if(user) {
+      res.status(200).json({status:true,mag: "password change sucessfully " })
+    }
+    else{
+      res.status(200).json({status:false,msg:"something went wrong"})
+    }
+  }
+  else{
+    res.status(200).json({status:false,msg:"Something went wrong"})
+  }
+}
+// forgot password get otp
+module.exports.genotp= async(req,res)=>{
+  try {
+    
+  const {email} = req.body;
+  const otp = generateOTP()
+  if( (await User.updateOne({email:email},{otp:otp})).modifiedCount ){
+    await sendMail(email,'Santhosh Audios | password reset | OTP',`Santhosh Audios  <br> your one time password is ${otp} `)
+    res.status(200).json({status:true,msg:"OTP generated"})
+  }
+  else {
+    res.status(200).json({status:false,msg:"user not found"})
+  }
+  
+} catch (error) {
+  console.log(error);
+  res.status(200).json({status:false,msg:"unable to generate OTP"})
+  
+}
+}
+module.exports.useotp= async(req,res)=>{
+  try {
+    const {email,otp} = req.body;
+    const user =await User.findOne({email:email,otp:otp},{password:0,isadmin:0,username:0,deviceID:0,createdAt:0})
+    if(user){
+      res.status(200).json({status:true,msg:"Sucess"})
+    }
+    else 
+      res.status(200).json({status:false,msg:"In valied OTP"})
+  } catch (error) {
+    res.status(200).json({status:false,msg:"Something went wrong"})
+  }
+}
+
+//forgot passwod 
+
+module.exports.forgotpass= async(req,res)=>{
+  const {email,password}= req.body;
+  const {id} = await User.findOne({email:email})
+  if(id,password){
+    const user = User.updatePass(id,password)
+    if(user) {
+      res.status(200).json({status:true,mag: "password change sucessfully " })
+    }
+    else{
+      res.status(200).json({status:false,msg:"something went wrong"})
+    }
+  }
+  else{
+    res.status(200).json({status:false,msg:"Something went wrong"})
+  }
 }
