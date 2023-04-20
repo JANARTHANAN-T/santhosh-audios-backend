@@ -48,8 +48,8 @@ module.exports.register = async (req, res, next) => {
   }
 };
 module.exports.login = async (req, res,next) => {
-  const { email, password } = req.body;
-  console.log(email+'  -   '+password) 
+  const { email, password, deviceId } = req.body;
+  console.log({...req.body}) 
   try {
     const user = await User.login(email, password);
     console.log(user);
