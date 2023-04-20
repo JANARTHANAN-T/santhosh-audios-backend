@@ -4,19 +4,19 @@ const { sendNotification } = require("../services/sendNotification");
 
 
 module.exports.newmag= async(req,res)=>{
-    const {email,name,phonenumber,message} =req.body;
+    const {email,name,phonenumber,message,isquotation,materials} =req.body;
     console.log(email,name,phonenumber,message);
     if(email && name && phonenumber && message){
-        const newmag =await Messages.create({email,name,phonenumber,message})
+        const newmag =await Messages.create({email,name,phonenumber,message,isquotation,materials})
         if(newmag){
             try {
                 await sendNotification({
                         app_id: "b78e338f-2dc8-4ded-b596-91ca8729b0f2",
-                        contents: {"en": `${name} \n ${message}`},
+                        contents: {"en": `New ${isquotation ? "Quotation":"Message"} from ${name} ${message}`},
                         heading:{"en":"Stranger"},
                         included_segments: ["All"]
                 })
-                await sendMail('manibharathim.20it@kongu.edu',`New message arrival from ${name} `,message)
+                await sendMail(process.env.userEMAIL,`New ${isquotation ? "Quotation":"Message"} arrival from ${name} `,` <br><br> Custermer Name : ${name} <br>  Custermer Phonenumber : ${phonenumber} <br> <br>${isquotation ? materials:message}.`)
                 res.status(200).json({status: true ,msg:"success"})
                 
             } catch (error) {
