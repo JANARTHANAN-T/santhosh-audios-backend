@@ -1,4 +1,4 @@
-const { register, login, viewuser, deleteuser, changepass, getotp } = require("../controllers/authControllers");
+const { register, login, viewuser, deleteuser, changepass, genotp, useotp } = require("../controllers/authControllers");
 
 const router = require("express").Router();
 
@@ -7,6 +7,6 @@ router.post("/login", login);
 router.get("/user",viewuser);
 router.delete('/:id',deleteuser);
 router.post('/changepass/:id',changepass)
-router.post('/genotp',getotp)
-// router.post('/useotp',forgotpass)
+router.post('/genotp',genotp)
+router.post('/useotp',useotp)
 module.exports = router;

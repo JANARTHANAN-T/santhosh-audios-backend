@@ -106,28 +106,41 @@ module.exports.changepass= async(req,res)=>{
   if(id,password){
     const user = User.updatePass(id,password)
     if(user) {
-      res.status(200).json({status:true,mag: "password change scssfully " })
+      res.status(200).json({status:true,mag: "password change sucessfully " })
     }
     else{
       res.status(200).json({status:false,msg:"something went wrong"})
     }
   }
   else{
-    res.status(200).json({status:false,msg:"something went wrong"})
+    res.status(200).json({status:false,msg:"Something went wrong"})
   }
 }
-module.exports.getotp= async(req,res)=>{
+module.exports.genotp= async(req,res)=>{
   try {
     
   const {email} = req.body;
   const otp = generateOTP()
-  await User.updateOne({email:email},{$set :{otp:opt}})
+  await User.updateOne({email:email},{otp:otp})
   await sendMail(email,'Santhosh Audios | password reset | OTP',`Santhosh Audios  \n your one time password is ${otp} `)
-  res.status(200).json({status:false,msg:"OTP generated"})
+  res.status(200).json({status:true,msg:"OTP generated"})
   
 } catch (error) {
   console.log(error);
-    res.status(200).json({status:false,msg:"unable to generate OTP"})
-    
+  res.status(200).json({status:false,msg:"unable to generate OTP"})
+  
+}
+}
+module.exports.useotp= async(req,res)=>{
+  try {
+    const {email,otp} = req.body;
+    const user =await User.findOne({email:email,otp:otp},{password:0,isadmin:0,username:0,deviceID:0,createdAt:0})
+    if(user){
+      res.status(200).json({status:true,msg:"Sucess"})
+    }
+    else 
+      res.status(200).json({status:false,msg:"In valied OTP"})
+  } catch (error) {
+    res.status(200).json({status:false,msg:"Something went wrong"})
   }
 }

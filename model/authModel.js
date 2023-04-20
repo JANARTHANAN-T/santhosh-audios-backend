@@ -58,7 +58,7 @@ userSchema.statics.login = async function (email, password ,deviceID) {
 };
 // get all user
 userSchema.statics.view = async function(){
-  const user = await this.find({},{password:0})
+  const user = await this.find({},{password:0,otp:0})
   // console.log(user);
   return user;
 }
