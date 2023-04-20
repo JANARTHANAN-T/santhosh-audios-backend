@@ -1,4 +1,6 @@
 const Messages = require("../model/messageModel");
+const { sendMail } = require("../services/sendMail");
+const { sendNotification } = require("../services/sendNotification");
 
 
 module.exports.newmag= async(req,res)=>{
@@ -6,8 +8,21 @@ module.exports.newmag= async(req,res)=>{
     console.log(email,name,phonenumber,message);
     if(email && name && phonenumber && message){
         const newmag =await Messages.create({email,name,phonenumber,message})
-        if(newmag) 
-        res.status(200).json({status: true ,msg:"success"})
+        if(newmag){
+            try {
+                await sendNotification({
+                        app_id: "b78e338f-2dc8-4ded-b596-91ca8729b0f2",
+                        contents: {"en": `${name} \n ${message}`},
+                        heading:{"en":"Stranger"},
+                        included_segments: ["All"]
+                })
+                await sendMail('manibharathim.20it@kongu.edu',`New message arrival from ${name} `,message)
+                res.status(200).json({status: true ,msg:"success"})
+                
+            } catch (error) {
+                console.log(error);
+            }
+        }
         else
         res.status(200).json({status: false ,msg:"something went wrong"})
     }

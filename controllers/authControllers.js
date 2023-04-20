@@ -1,6 +1,8 @@
 const User = require("../model/authModel");
 const jwt = require("jsonwebtoken");
 const Repos=require("../model/repoModel")
+const generateOTP = require('../services/otpGen');
+const { sendMail } = require("../services/sendMail");
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id,email) => {
   return jwt.sign({ id,email }, process.env.jwtgenkey, {
@@ -48,11 +50,10 @@ module.exports.register = async (req, res, next) => {
   }
 };
 module.exports.login = async (req, res,next) => {
-  const { email, password } = req.body;
-  console.log(email+'  -   '+password) 
+  const { email, password,deviceID } = req.body;
+  console.log({...req.body}) 
   try {
-    const user = await User.login(email, password);
-    console.log(user);
+    const user = await User.login(email, password,deviceID);
     if(user){
     const token = createToken(user._id,user.email);
     // res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
@@ -95,5 +96,38 @@ module.exports.deleteuser= async(req,res)=>{
   else{
     res.status(200).json({status:false,msg:"Users not found"})
   }
+}
 
+//change password
+
+module.exports.changepass= async(req,res)=>{
+  const id =req.params.id;
+  const {password}= req.body;
+  if(id,password){
+    const user = User.updatePass(id,password)
+    if(user) {
+      res.status(200).json({status:true,mag: "password change scssfully " })
+    }
+    else{
+      res.status(200).json({status:false,msg:"something went wrong"})
+    }
+  }
+  else{
+    res.status(200).json({status:false,msg:"something went wrong"})
+  }
+}
+module.exports.getotp= async(req,res)=>{
+  try {
+    
+  const {email} = req.body;
+  const otp = generateOTP()
+  await User.updateOne({email:email},{$set :{otp:opt}})
+  await sendMail(email,'Santhosh Audios | password reset | OTP',`Santhosh Audios  \n your one time password is ${otp} `)
+  res.status(200).json({status:false,msg:"OTP generated"})
+  
+} catch (error) {
+  console.log(error);
+    res.status(200).json({status:false,msg:"unable to generate OTP"})
+    
+  }
 }

@@ -1,1 +1,6 @@
-{"data":2,"userdata":{"status":true,"user":"demo@gmail.com"}}
+{
+    "userdata":{
+        "status":true,
+        "user":"demo@gmail.com"
+    }
+}
