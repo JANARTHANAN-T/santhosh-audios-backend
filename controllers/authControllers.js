@@ -116,14 +116,19 @@ module.exports.changepass= async(req,res)=>{
     res.status(200).json({status:false,msg:"Something went wrong"})
   }
 }
+// forgot password get otp
 module.exports.genotp= async(req,res)=>{
   try {
     
   const {email} = req.body;
   const otp = generateOTP()
-  await User.updateOne({email:email},{otp:otp})
-  await sendMail(email,'Santhosh Audios | password reset | OTP',`Santhosh Audios  \n your one time password is ${otp} `)
-  res.status(200).json({status:true,msg:"OTP generated"})
+  if( (await User.updateOne({email:email},{otp:otp})).modifiedCount ){
+    await sendMail(email,'Santhosh Audios | password reset | OTP',`Santhosh Audios  <br> your one time password is ${otp} `)
+    res.status(200).json({status:true,msg:"OTP generated"})
+  }
+  else {
+    res.status(200).json({status:false,msg:"user not found"})
+  }
   
 } catch (error) {
   console.log(error);
@@ -141,6 +146,25 @@ module.exports.useotp= async(req,res)=>{
     else 
       res.status(200).json({status:false,msg:"In valied OTP"})
   } catch (error) {
+    res.status(200).json({status:false,msg:"Something went wrong"})
+  }
+}
+
+//forgot passwod 
+
+module.exports.forgotpass= async(req,res)=>{
+  const {email,password}= req.body;
+  const {id} = await User.findOne({email:email})
+  if(id,password){
+    const user = User.updatePass(id,password)
+    if(user) {
+      res.status(200).json({status:true,mag: "password change sucessfully " })
+    }
+    else{
+      res.status(200).json({status:false,msg:"something went wrong"})
+    }
+  }
+  else{
     res.status(200).json({status:false,msg:"Something went wrong"})
   }
 }
