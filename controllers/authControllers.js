@@ -40,7 +40,7 @@ module.exports.register = async (req, res, next) => {
     // console.log(JSON.stringify(req.body.email))
     const user = await User.create({ username,email,password });
 
-    res.status(201).json({ status: true });
+    res.status(201).json({ status: true,user });
   } catch (err) {
     console.log(err);
     // const errors = handleErrors(err);
@@ -49,14 +49,15 @@ module.exports.register = async (req, res, next) => {
 };
 module.exports.login = async (req, res,next) => {
   const { email, password } = req.body;
-  console.log(email+'  -   '+password)
+  console.log(email+'  -   '+password) 
   try {
     const user = await User.login(email, password);
+    console.log(user);
     if(user){
     const token = createToken(user._id,user.email);
     // res.cookie("jwt", token, { httpOnly: false, maxAge: maxAge * 1000 });
     
-    res.status(200).json({ user: user._id, status: true,jwt:token,username:user.name,msg:'Login Scussflly'});
+    res.status(200).json({ user, status: true,jwt:token,msg:'Login Successfully'});
     }
     else
     return res.status(400).json({status:false,msg:"Wrong username or password !"})
@@ -84,8 +85,9 @@ module.exports.deleteuser= async(req,res)=>{
   const id =req.params.id;
   if(id){
     await User.deleteOne(({_id:id}))
-      .then(function(){
-        res.status(200).json({status:true,msg:"Accound deletd sucessfully"})
+      .then(async()=>{
+        const users=await User.find({})
+        res.status(200).json({status:true,msg:"Accound deletd sucessfully",users})
       })
       .catch(function(err){res.status(200).json({status:false,msg:"Users not found",err:err})})
     // re
