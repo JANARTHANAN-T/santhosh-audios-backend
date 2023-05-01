@@ -1,7 +1,7 @@
-const { addRepo } = require('../controllers/gitControllers');
+const { pushRepo } = require('../controllers/gitControllers');
 
 const router = require('express').Router();
 
-router.post('/addRepo',addRepo );
+router.post('/push',pushRepo );
 
 module.exports =router;

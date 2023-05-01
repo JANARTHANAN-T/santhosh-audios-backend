@@ -1,11 +1,13 @@
 
 const jsonfile = require('jsonfile')
-const file = './codestack/data.json'
+const file = './codestack/React-Testing/src/data.json'
 const Fs = require('fs')  
+const { checkRepo } = require('../services/chickRepo')
 
 
 module.exports.getdata = async (req,res)=>{
-    if(Fs.existsSync('./codestack/data.json')){   
+    await checkRepo()
+    if(Fs.existsSync(file)){   
         jsonfile.readFile(file, function (err, obj) {
             if (err) {
                 // console.log(err);
@@ -19,6 +21,7 @@ module.exports.getdata = async (req,res)=>{
     res.send({'status':false,'msg':'no page found'})
 }
 module.exports.savedata = async (req,res)=>{
+    await checkRepo()
     // res.send('savedata')
     jsonfile.writeFile(file,req.body,function(err,obj){
         if (err) {

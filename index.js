@@ -44,6 +44,6 @@ app.get('/', (req, res) => {
 })
 app.use(express.json());
 app.use("/auth", authRoutes);
-app.use("/edit",auth,editRouter)
-app.use("/git",auth,gitRouter)
+app.use("/edit",editRouter)
+app.use("/git",gitRouter)
 app.use("/message",messageRouter)
