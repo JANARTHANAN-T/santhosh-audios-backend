@@ -5,6 +5,7 @@ const authRoutes = require("./routes/authRoutes");
 const editRouter = require("./routes/editRoutes")
 const gitRouter= require("./routes/gitRoutes")
 const messageRouter =require("./routes/messageRoutes")
+const viewcountRoutes =require("./routes/viewCountRoutes")
 const cookieParser = require("cookie-parser");
 const { auth } = require("./middlewares/authMiddleware");
 require('dotenv').config()
@@ -47,3 +48,4 @@ app.use("/auth", authRoutes);
 app.use("/edit",editRouter)
 app.use("/git",gitRouter)
 app.use("/message",messageRouter)
+app.use("/viewcount",viewcountRoutes)
