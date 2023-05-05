@@ -16,7 +16,8 @@ module.exports.checkRepo = async ()=> {
     if(! await exists(path.join(__dirname,'codestack','React-Testing'))){
         // console.log('hi'+);
         new simpleGit(path.join('./codestack'))
-          .clone('https://itsmanibharathi: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@github.com/itsmanibharathi/React-Testing')
+        .clone(`https://itsmanibharathi:${process.env.gitTOKEN}@github.com/itsmanibharathi/React-Testing`)
+        console.log(process.env.gitTOKEN);
     }
 
     return true
