@@ -6,7 +6,7 @@ const { sendNotification } = require("../services/sendNotification");
 module.exports.newmag= async(req,res)=>{
     const {email,name,phonenumber,message,isquotation,materials} =req.body;
     console.log(email,name,phonenumber,message);
-    if(email && name && phonenumber && message){
+    if(email && name && phonenumber ){
         const newmag =await Messages.create({email,name,phonenumber,message,isquotation,materials})
         if(newmag){
             try {
@@ -17,6 +17,7 @@ module.exports.newmag= async(req,res)=>{
                         included_segments: ["All"]
                 })
                 await sendMail(process.env.userEMAIL,`New ${isquotation ? "Quotation":"Message"} arrival from ${name} `,` <br><br> Custermer Name : ${name} <br>  Custermer Phonenumber : ${phonenumber} <br> <br>${isquotation ? materials:message}.`)
+                
                 res.status(200).json({status: true ,msg:"success"})
                 
             } catch (error) {

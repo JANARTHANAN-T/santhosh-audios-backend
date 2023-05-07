@@ -20,6 +20,7 @@ const messageSchema=new mongoose.Schema({
     type:Boolean,
     default: false
   },
+  totalBudget:String,
   createdAt: {
     type: Date,
     default: Date.now
@@ -29,7 +30,7 @@ const messageSchema=new mongoose.Schema({
     default : false
   },
   materials:{
-    type:JSON,
+    type:Array,
     default :undefined
   }
 })
