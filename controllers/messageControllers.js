@@ -17,7 +17,7 @@ module.exports.newmag= async(req,res)=>{
                         included_segments: ["All"]
                 })
                 await sendMail(process.env.userEMAIL,`New ${isquotation ? "Quotation":"Message"} arrival from ${name} `,` <br><br> Custermer Name : ${name} <br>  Custermer Phonenumber : ${phonenumber} <br> <br>${isquotation ? materials:message}.`)
-                
+
                 res.status(200).json({status: true ,msg:"success"})
                 
             } catch (error) {
@@ -80,9 +80,9 @@ module.exports.deleteAll= async(req,res)=>{
             await Messages.deleteMany({})
             const message=await Messages.find({})
             res.status(200).json({status: true,message})
-          }
+        }
         catch (error) {
             console.log(error);
             res.status(200).json({status:false,msg:"something went wrong"})
-          }
+        }
 }

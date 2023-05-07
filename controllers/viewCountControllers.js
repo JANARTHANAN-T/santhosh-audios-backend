@@ -1,10 +1,11 @@
 const jsonfile = require('jsonfile')
 const file = './codestack/count.json'
-const Fs = require('fs')  
+const fs = require('fs')  
 
 
 module.exports.increment = async (req,res)=>{
-    const json = Fs.readFileSync('count.json', 'utf-8');
+  
+    const json = fs.readFileSync(file, 'utf-8');
     const obj = JSON.parse(json);
     // Reads count.json and converts to JS object
 
@@ -17,7 +18,7 @@ module.exports.increment = async (req,res)=>{
     const newJSON = JSON.stringify(obj);
     // Converts result to JSON
 
-    fs.writeFileSync('count.json', newJSON);
+    fs.writeFileSync(file, newJSON);
     res.send(newJSON);
     // Writes result to file and sends to user as JSON
 
